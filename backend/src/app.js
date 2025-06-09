@@ -4,7 +4,6 @@ import cors from 'cors';
 
 // backend/src/app.js
 const express = require('express');
-const cors = require('cors');
 const livrosRouter = require('./routes/livros');
 const avaliacoesRouter = require('./routes/avaliacoes');
 
