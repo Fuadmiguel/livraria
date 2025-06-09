@@ -1,6 +1,7 @@
 {
   "name": "livraria-api",
   "version": "1.0.0",
+  "type": "module",
   "description": "API para catálogo de livros",
   "main": "src/app.js",
   "scripts": {
