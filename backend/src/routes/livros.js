@@ -1,7 +1,7 @@
-const express = require('express');
+import express from 'express';
+import prisma from '../prisma.js';
+
 const router = express.Router();
-const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient();
 
 // POST /livros - Cadastrar novo livro
 router.post('/', async (req, res) => {
@@ -59,4 +59,4 @@ router.delete('/:id', async (req, res) => {
     }
 });
 
-module.exports = router;
+export default router;

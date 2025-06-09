@@ -1,7 +1,7 @@
-const express = require('express');
+import express from 'express';
+import prisma from '../prisma.js';
+
 const router = express.Router();
-const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient();
 
 // POST /livros/:id/avaliacoes - Adicionar avaliação/comentário ao livro
 router.post('/:id/avaliacoes', async (req, res) => {
@@ -22,4 +22,4 @@ router.post('/:id/avaliacoes', async (req, res) => {
     }
 });
 
-module.exports = router;
+export default router;

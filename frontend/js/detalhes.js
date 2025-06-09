@@ -17,12 +17,17 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         
         const avaliacao = {
-            nota: document.getElementById('nota').value,
+            nota: parseInt(document.getElementById('nota').value),
             comentario: document.getElementById('comentario').value
         };
         
+        if (avaliacao.nota < 1 || avaliacao.nota > 5) {
+            alert('A nota deve ser entre 1 e 5');
+            return;
+        }
+        
         try {
-            const response = await fetch(`/livros/${livroId}/avaliacoes`, {
+            const response = await fetch(`/api/livros/${livroId}/avaliacoes`, {  // Corrigido para /api/livros
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -45,7 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Carregar detalhes do livro
     async function carregarLivroDetalhes(id) {
         try {
-            const response = await fetch(`/livros/${id}`);
+            const response = await fetch(`/api/livros/${id}`);  // Corrigido para /api/livros
             const livro = await response.json();
             
             const livroDetalhes = document.getElementById('livroDetalhes');
@@ -65,7 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Carregar avaliações do livro
     async function carregarAvaliacoes(livroId) {
         try {
-            const response = await fetch(`/livros/${livroId}`);
+            const response = await fetch(`/api/livros/${livroId}`);  // Corrigido para /api/livros
             const livro = await response.json();
             
             const avaliacoesList = document.getElementById('avaliacoesList');
@@ -78,7 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     avaliacaoElement.innerHTML = `
                         <div class="card-body">
                             <div class="d-flex justify-content-between">
-                                <h5 class="card-title">Nota: ${'★'.repeat(avaliacao.nota)}${'☆'.repeat(5 - avaliacao.nota)}</h5>
+                                <h5 class="card-title star-rating">${'★'.repeat(avaliacao.nota)}${'☆'.repeat(5 - avaliacao.nota)}</h5>
                                 <small class="text-muted">${new Date(avaliacao.createdAt).toLocaleDateString()}</small>
                             </div>
                             <p class="card-text">${avaliacao.comentario}</p>

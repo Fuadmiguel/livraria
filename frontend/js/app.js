@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         
         try {
-            const response = await fetch('/livros', {
+            const response = await fetch('/api/livros', {  // Corrigido para /api/livros
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Carregar lista de livros
     async function carregarLivros() {
         try {
-            const response = await fetch('/livros');
+            const response = await fetch('/api/livros');  // Corrigido para /api/livros
             const livros = await response.json();
             
             livrosList.innerHTML = '';
@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <p class="mb-1">${livro.sinopse.substring(0, 100)}...</p>
                     <small>Gênero: ${livro.genero}</small>
                     <div class="mt-2">
-                        <button class="btn btn-sm btn-info" onclick="verDetalhes(${livro.id})">Detalhes</button>
+                        <a href="detalhes.html?id=${livro.id}" class="btn btn-sm btn-info">Detalhes</a>
                         <button class="btn btn-sm btn-danger" onclick="deletarLivro(${livro.id})">Excluir</button>
                     </div>
                 `;
@@ -67,15 +67,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     
-    // Funções globais para os botões
-    window.verDetalhes = async (id) => {
-        window.location.href = `detalhes.html?id=${id}`;
-    };
-    
+    // Função global para deletar
     window.deletarLivro = async (id) => {
         if (confirm('Tem certeza que deseja excluir este livro?')) {
             try {
-                const response = await fetch(`/livros/${id}`, {
+                const response = await fetch(`/api/livros/${id}`, {  // Corrigido para /api/livros
                     method: 'DELETE'
                 });
                 
