@@ -4,6 +4,19 @@ import { fileURLToPath } from 'url';
 import livrosRouter from './routes/livros.js'; // Adicione esta linha
 import avaliacoesRouter from './routes/avaliacoes.js'; // Adicione esta linha
 import cors from 'cors';
+import helmet from 'helmet';
+import 'dotenv/config';
+
+// Configuração segura para ambiente de produção
+const corsOptions = {
+  origin: [
+    'https://livraria-e905.onrender.com', // Seu domínio no Render
+    'http://localhost:3000'              // Para desenvolvimento local
+  ],
+  methods: ['GET', 'POST', 'DELETE', 'PATCH', 'PUT'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
+};
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -12,8 +25,9 @@ const app = express();
 const PORT = process.env.PORT || 3000; // Adicione esta linha
 
 // Middleware para parsing de JSON
+app.use(helmet());
 app.use(express.json());
-app.use(cors());
+app.use(cors(corsOptions));
 
 // Configuração correta para arquivos estáticos
 app.use('/css', express.static(path.join(__dirname, '../../frontend/css'), {
