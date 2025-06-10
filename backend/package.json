@@ -7,12 +7,13 @@
   "scripts": {
     "start": "node src/app.js",
     "dev": "nodemon src/app.js",
-    "migrate": "npx prisma migrate dev --name init",
-    "seed": "node src/seed.js",
-    "build": "npx prisma generate",
-    "prisma:generate": "npx prisma generate",
-    "prisma:migrate": "npx prisma migrate deploy",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "migrate": "npx prisma migrate dev --name init --schema=./prisma/schema.prisma",
+    "seed": "node prisma/seed.js",
+    "prisma:generate": "npx prisma generate --schema=./prisma/schema.prisma",
+    "prisma:migrate": "npx prisma migrate deploy --schema=./prisma/schema.prisma",
+    "build": "npm run prisma:generate && npm run prisma:migrate",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "postinstall": "npm run prisma:generate"
   },
   "dependencies": {
     "@prisma/client": "^5.0.0",
@@ -27,6 +28,9 @@
   },
   "prisma": {
     "schema": "prisma/schema.prisma",
-    "seed": "node src/seed.js"
+    "seed": "node prisma/seed.js"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }
