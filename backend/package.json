@@ -3,12 +3,12 @@
   "version": "1.0.0",
   "type": "module",
   "description": "API para catálogo de livros com avaliações",
-  "main": "src/app.js",
+  "main": "/src/app.js",
   "scripts": {
-    "start": "node src/app.js",
-    "dev": "nodemon src/app.js",
+    "start": "node /src/app.js",
+    "dev": "nodemon /src/app.js",
     "migrate": "npx prisma migrate dev --name init",
-    "seed": "node src/seed.js",
+    "seed": "node /src/seed.js",
     "build": "npx prisma generate",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -24,7 +24,7 @@
     "prisma": "^5.0.0"
   },
   "prisma": {
-    "schema": "backend/prisma/schema.prisma",
-    "seed": "node src/seed.js"
+    "schema": "/backend/prisma/schema.prisma",
+    "seed": "node /src/seed.js"
   }
 }
