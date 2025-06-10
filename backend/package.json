@@ -24,6 +24,7 @@
     "prisma": "^5.0.0"
   },
   "prisma": {
+    "schema": "backend/prisma/schema.prisma",
     "seed": "node src/seed.js"
   }
 }
