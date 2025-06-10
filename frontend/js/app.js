@@ -1,7 +1,11 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Todas as chamadas fetch devem usar /api/
     const livroForm = document.getElementById('livroForm');
     const livrosList = document.getElementById('livrosList');
-    
+    fetch('/api/livros') // em vez de /livros
+    fetch('/api/livros', { method: 'POST' }) // em vez de /livros
+    fetch(`/api/livros/${id}`, { method: 'DELETE' }) // em vez de /livros/${id}
+
     // Carregar livros ao iniciar
     carregarLivros();
     

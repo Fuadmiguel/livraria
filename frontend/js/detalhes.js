@@ -1,6 +1,10 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Todas as chamadas fetch devem usar /api/
+    fetch(`/api/livros/${livroId}`) // em vez de /livros/${livroId}
+    fetch(`/api/livros/${livroId}/avaliacoes`, { method: 'POST' }) // em vez de /livros/${livroId}/avaliacoes
     const urlParams = new URLSearchParams(window.location.search);
-    const livroId = urlParams.get('id');
+    const livroId = urlParams.get('id'); // Esta linha estava faltando
+
     
     if (!livroId) {
         window.location.href = 'index.html';
