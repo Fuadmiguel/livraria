@@ -23,26 +23,40 @@ export const prisma = new PrismaClient({
 const app = express();
 
 // Middlewares
-app.use(helmet({
-  contentSecurityPolicy: {
-    directives: {
-      ...helmet.contentSecurityPolicy.getDefaultDirectives(),
-      "img-src": ["'self'", "data:", "https://livraria-e905.onrender.com"],
-      "script-src": ["'self'", "https://cdn.jsdelivr.net"],
-      "style-src": ["'self'", "https://cdn.jsdelivr.net", "'unsafe-inline'"]
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        ...helmet.contentSecurityPolicy.getDefaultDirectives(),
+        "default-src": ["'self'"],
+        "img-src": ["'self'", "data:", "https://livraria-e905.onrender.com"],
+        "script-src": ["'self'", "https://cdn.jsdelivr.net"],
+        "style-src": ["'self'", "https://cdn.jsdelivr.net", "'unsafe-inline'"],
+        "connect-src": ["'self'", "https://livraria-e905.onrender.com"]
+      }
+    },
+    crossOriginResourcePolicy: { policy: "cross-origin" }
+  })
+);
+
+app.get('/favicon.ico', (req, res) => {
+  res.sendFile(path.join(__dirname, '../public/images/favicon.ico'), {
+    headers: {
+      'Content-Type': 'image/x-icon',
+      'Cache-Control': 'public, max-age=31536000'
     }
-  },
-  crossOriginResourcePolicy: false
-}));
+  });
+});
 
 app.use(express.json());
 app.use(cors({
   origin: ['http://localhost:3000', 'https://livraria-e905.onrender.com']
 }));
 
-// Servir arquivos estáticos (frontend)
-app.use(express.static(path.join(__dirname, '../public')));
 
+
+// Servir arquivos estáticos (frontend)
+app.use(express.static(path.join(__dirname, '../../public')));
 // Rotas da API
 app.use('/api/livros', livrosRouter);
 app.use('/api/livros', avaliacoesRouter); // Rotas de avaliações
