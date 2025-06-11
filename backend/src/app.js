@@ -7,7 +7,7 @@ import helmet from 'helmet';
 const prisma = new PrismaClient({
   datasources: {
     db: {
-      url: process.env.DATABASE_URL + (process.env.NODE_ENV === 'production' ? '?sslmode=require' : '')
+      url: process.env.DATABASE_URL // Remova concatenações manuais com SSL
     }
   }
 });
