@@ -18,21 +18,26 @@ const app = express();
 // Middlewares
 app.use(
   helmet({
-    contentSecurityPolicy: {
-      directives: {
-        ...helmet.contentSecurityPolicy.getDefaultDirectives(),
-        "img-src": ["'self'", "data:", "https://livraria-e905.onrender.com"],
-      },
-    },
-    crossOriginResourcePolicy: { policy: "cross-origin" } // Alterado para cross-origin
+    contentSecurityPolicy: false, // Desativa temporariamente CSP para testes
+    crossOriginResourcePolicy: false // Desativa CORP temporariamente
   })
 );
+
 app.use(express.json());
 app.use(cors({
   origin: ['http://localhost:3000', 'https://livraria-e905.onrender.com']
 }));
 
-app.use(express.static('public')); // Sem headers manuais
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  next();
+});
+
+app.use((req, res, next) => {
+  res.setHeader('Cross-Origin-Resource-Policy', 'same-site'); // ou 'cross-origin'
+  next();
+});
 
 // Rota de health check (obrigatória para Render)
 app.get('/', (req, res) => res.status(200).json({ status: 'API Online' }));
@@ -48,3 +53,17 @@ app.use((err, req, res, next) => {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
+
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+app.get('/favicon.ico', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'favicon.ico'), {
+    headers: {
+      'Content-Type': 'image/x-icon',
+      'Cache-Control': 'public, max-age=31536000'
+    }
+  });
+});
