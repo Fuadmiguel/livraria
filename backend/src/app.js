@@ -1,8 +1,8 @@
 import express from 'express';
 import cors from 'cors';
 import { PrismaClient } from '@prisma/client';
-import livrosRouter from './routes/livros.js'; // Verifique este caminho
-import helmet from 'helmet'; // Importe o helmet
+import livrosRouter from './routes/livros.js';
+import helmet from 'helmet';
 
 const prisma = new PrismaClient({
   datasources: {
@@ -10,9 +10,29 @@ const prisma = new PrismaClient({
       url: process.env.DATABASE_URL + (process.env.NODE_ENV === 'production' ? '?sslmode=require' : '')
     }
   }
-})
+});
 
 const app = express();
+
+// Configuração do Helmet com CSP personalizado (DEVE VIR ANTES DE express.static!)
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        imgSrc: ["'self'", "data:", "https://livraria-e905.onrender.com"],
+        scriptSrc: ["'self'"],
+        styleSrc: ["'self'", "'unsafe-inline'"], // Permite CSS inline (evite em produção)
+        fontSrc: ["'self'", "data:"],
+        connectSrc: ["'self'"],
+        manifestSrc: ["'self'"]
+      },
+    },
+  })
+);
+
+// Servir arquivos estáticos (favicon.ico deve estar na pasta /public)
+app.use(express.static('public'));
 
 // Configuração do CORS
 app.use(cors({
@@ -22,25 +42,8 @@ app.use(cors({
 
 app.use(express.json());
 
-app.use(express.static('public')); // Se o favicon estiver em /public
-
-// Configuração do Helmet com CSP personalizado
-app.use(
-  helmet({
-    contentSecurityPolicy: {
-      directives: {
-        defaultSrc: ["'self'"],
-        imgSrc: ["'self'", "https://livraria-e905.onrender.com", "data:"], // Permite imagens do próprio domínio e data URIs
-        scriptSrc: ["'self'", "'unsafe-inline'"], // Permite scripts inline (se necessário)
-        styleSrc: ["'self'", "'unsafe-inline'"], // Permite CSS inline (se necessário)
-        connectSrc: ["'self'"], // Permite conexões (fetch, XHR)
-      },
-    },
-  })
-);
-
 // Rotas
-app.use('/api/livros', livrosRouter); // Prefixo /api para todas as rotas
+app.use('/api/livros', livrosRouter);
 
 // Middleware de erro
 app.use((err, req, res, next) => {
