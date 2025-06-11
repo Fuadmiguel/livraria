@@ -1,19 +1,15 @@
 {
-  "name": "livraria-api",
+  "name": "backend",
   "version": "1.0.0",
   "type": "module",
-  "description": "API para catálogo de livros com avaliações",
   "main": "src/app.js",
   "scripts": {
     "start": "node src/app.js",
     "dev": "nodemon src/app.js",
-    "migrate": "npx prisma migrate dev --name init --schema=./prisma/schema.prisma",
-    "seed": "node prisma/seed.js",
     "prisma:generate": "npx prisma generate --schema=./prisma/schema.prisma",
     "prisma:migrate": "npx prisma migrate deploy --schema=./prisma/schema.prisma",
     "build": "npm run prisma:generate && npm run prisma:migrate",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "postinstall": "npm run prisma:generate"
+    "postinstall": "npm run build"
   },
   "dependencies": {
     "@prisma/client": "^5.0.0",
@@ -27,10 +23,6 @@
     "prisma": "^5.0.0"
   },
   "prisma": {
-    "schema": "prisma/schema.prisma",
-    "seed": "node prisma/seed.js"
-  },
-  "engines": {
-    "node": ">=18.0.0"
+    "schema": "prisma/schema.prisma"
   }
 }
