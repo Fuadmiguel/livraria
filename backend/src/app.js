@@ -2,63 +2,49 @@ import express from 'express';
 import cors from 'cors';
 import { PrismaClient } from '@prisma/client';
 import helmet from 'helmet';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import livrosRouter from './routes/livros.js';
 
-// Configuração única do Prisma (compatível com Render)
+// Configuração para obter __dirname em módulos ES
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Configuração do Prisma
 export const prisma = new PrismaClient({
   datasources: {
     db: {
-      url: process.env.DATABASE_URL // SSL já é gerenciado pelo Render
+      url: process.env.DATABASE_URL
     }
   }
 });
 
 const app = express();
 
-// Middlewares
+// Configuração do Helmet com políticas de segurança
 app.use(
   helmet({
-    contentSecurityPolicy: false, // Desativa temporariamente CSP para testes
-    crossOriginResourcePolicy: false // Desativa CORP temporariamente
+    contentSecurityPolicy: {
+      directives: {
+        ...helmet.contentSecurityPolicy.getDefaultDirectives(),
+        "img-src": ["'self'", "data:", "https://livraria-e905.onrender.com"],
+      },
+    },
+    crossOriginResourcePolicy: { policy: "cross-origin" }
   })
 );
 
+// Middlewares básicos
 app.use(express.json());
 app.use(cors({
-  origin: ['http://localhost:3000', 'https://livraria-e905.onrender.com']
+  origin: ['http://localhost:3000', 'https://livraria-e905.onrender.com'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE']
 }));
 
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-  next();
-});
+// Servir arquivos estáticos
+app.use(express.static(path.join(__dirname, 'public')));
 
-app.use((req, res, next) => {
-  res.setHeader('Cross-Origin-Resource-Policy', 'same-site'); // ou 'cross-origin'
-  next();
-});
-
-// Rota de health check (obrigatória para Render)
-app.get('/', (req, res) => res.status(200).json({ status: 'API Online' }));
-
-// Rotas
-app.use('/api/livros', livrosRouter);
-
-// Error handling
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ error: 'Erro interno' });
-});
-
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
-
-import path from 'path';
-import { fileURLToPath } from 'url';
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-
+// Rota explícita para favicon
 app.get('/favicon.ico', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'favicon.ico'), {
     headers: {
@@ -66,4 +52,32 @@ app.get('/favicon.ico', (req, res) => {
       'Cache-Control': 'public, max-age=31536000'
     }
   });
+});
+
+// Rota de health check
+app.get('/', (req, res) => {
+  res.status(200).json({ 
+    status: 'API Online',
+    message: 'Servidor operacional',
+    timestamp: new Date().toISOString()
+  });
+});
+
+// Rotas da API
+app.use('/api/livros', livrosRouter);
+
+// Middleware de erro
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ 
+    error: 'Erro interno no servidor',
+    details: process.env.NODE_ENV === 'development' ? err.message : undefined
+  });
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Servidor rodando na porta ${PORT}`);
+  console.log(`Ambiente: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`URL do banco: ${process.env.DATABASE_URL ? 'configurada' : 'não configurada'}`);
 });
