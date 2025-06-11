@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import { PrismaClient } from '@prisma/client';
-import livrosRouter from './src/routes/livros.js'; // Verifique este caminho
+import livrosRouter from './routes/livros.js'; // Verifique este caminho
 
 const prisma = new PrismaClient({
   datasources: {

@@ -2,7 +2,13 @@ import { Router } from 'express';
 import { PrismaClient } from '@prisma/client';
 
 const router = Router();
-const prisma = new PrismaClient();
+const prisma = new PrismaClient({
+  datasources: {
+    db: {
+      url: process.env.DATABASE_URL + (process.env.NODE_ENV === 'production' ? '?sslmode=require' : '')
+    }
+  }
+})
 
 // POST /api/livros
 router.post('/', async (req, res) => {
