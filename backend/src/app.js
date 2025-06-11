@@ -22,6 +22,8 @@ app.use(cors({
 
 app.use(express.json());
 
+app.use(express.static('public')); // Se o favicon estiver em /public
+
 // Configuração do Helmet com CSP personalizado
 app.use(
   helmet({
