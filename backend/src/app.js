@@ -16,11 +16,32 @@ export const prisma = new PrismaClient({
 const app = express();
 
 // Middlewares
-app.use(helmet());
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        ...helmet.contentSecurityPolicy.getDefaultDirectives(),
+        "img-src": ["'self'", "data:", "https://livraria-e905.onrender.com"],
+      },
+    },
+    crossOriginResourcePolicy: { policy: "same-site" } // Adicione esta linha
+  })
+);
 app.use(express.json());
 app.use(cors({
   origin: ['http://localhost:3000', 'https://livraria-e905.onrender.com']
 }));
+
+app.use(express.static('public', {
+  setHeaders: (res) => {
+    res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin')
+  }
+}));
+
+app.use((req, res, next) => {
+  res.setHeader('Cross-Origin-Resource-Policy', 'same-site'); // ou 'cross-origin'
+  next();
+});
 
 // Rota de health check (obrigatória para Render)
 app.get('/', (req, res) => res.status(200).json({ status: 'API Online' }));
