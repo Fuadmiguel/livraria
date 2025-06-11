@@ -24,7 +24,7 @@ app.use(
         "img-src": ["'self'", "data:", "https://livraria-e905.onrender.com"],
       },
     },
-    crossOriginResourcePolicy: { policy: "same-site" } // Adicione esta linha
+    crossOriginResourcePolicy: { policy: "cross-origin" } // Alterado para cross-origin
   })
 );
 app.use(express.json());
@@ -32,16 +32,7 @@ app.use(cors({
   origin: ['http://localhost:3000', 'https://livraria-e905.onrender.com']
 }));
 
-app.use(express.static('public', {
-  setHeaders: (res) => {
-    res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin')
-  }
-}));
-
-app.use((req, res, next) => {
-  res.setHeader('Cross-Origin-Resource-Policy', 'same-site'); // ou 'cross-origin'
-  next();
-});
+app.use(express.static('public')); // Sem headers manuais
 
 // Rota de health check (obrigatória para Render)
 app.get('/', (req, res) => res.status(200).json({ status: 'API Online' }));
