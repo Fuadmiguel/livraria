@@ -1,25 +1,15 @@
 import express from 'express';
 import cors from 'cors';
-import livrosRouter from '/routes/livros.js'; // Verifique este caminho
-
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient } from '@prisma/client';
+import livrosRouter from './src/routes/livros.js'; // Verifique este caminho
 
 const prisma = new PrismaClient({
   datasources: {
     db: {
-      url: process.env.DATABASE_URL + 
-           (process.env.NODE_ENV === 'production' ? 
-           '&sslmode=require&sslaccept=strict&pool_timeout=60' : 
-           '')
+      url: process.env.DATABASE_URL + (process.env.NODE_ENV === 'production' ? '?sslmode=require' : '')
     }
-  },
-  log: ['query', 'info', 'warn', 'error']
+  }
 })
-
-// Teste de conexão
-prisma.$connect()
-  .then(() => console.log('✅ Conexão SSL estabelecida com sucesso'))
-  .catch(err => console.error('❌ Erro de conexão SSL:', err))
 
 const app = express();
 
