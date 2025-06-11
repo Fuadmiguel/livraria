@@ -40,7 +40,7 @@ app.use(
 );
 
 app.get('/favicon.ico', (req, res) => {
-  res.sendFile(path.join(__dirname, '../public/images/favicon.ico'), {
+  res.sendFile(path.join(__dirname, '/home/fuad/faculdade/n46112n1/livraria-api/public/images/favicon.ico'), {
     headers: {
       'Content-Type': 'image/x-icon',
       'Cache-Control': 'public, max-age=31536000'
@@ -63,7 +63,7 @@ app.use('/api/livros', avaliacoesRouter); // Rotas de avaliações
 
 // Rota para o frontend
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../public', 'index.html'));
+  res.sendFile(path.join(__dirname, '../../public', 'index.html'));
 });
 
 // Iniciar servidor
