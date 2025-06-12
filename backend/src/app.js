@@ -21,8 +21,6 @@ export const prisma = new PrismaClient({
 });
 
 const app = express();
-const express = require('express');
-const path = require('path');
 
 // Servir arquivos estáticos da pasta 'public'
 app.use(express.static(path.join(__dirname, '../../public')));
