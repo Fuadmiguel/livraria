@@ -7,7 +7,7 @@ import { fileURLToPath } from 'url';
 import livrosRouter from './routes/livros.js';
 import avaliacoesRouter from './routes/avaliacoes.js';
 
-// Configuração para __dirname em módulos ES
+// Configuração para __dirname em ES Modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -22,46 +22,31 @@ export const prisma = new PrismaClient({
 
 const app = express();
 
-// Servir arquivos estáticos da pasta 'public'
-app.use(express.static(path.join(__dirname, '../../public')));
+// Configuração de segurança
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      ...helmet.contentSecurityPolicy.getDefaultDirectives(),
+      "img-src": ["'self'", "data:", "https://livraria-e905.onrender.com"],
+      "script-src": ["'self'", "https://cdn.jsdelivr.net"],
+      "style-src": ["'self'", "https://cdn.jsdelivr.net", "'unsafe-inline'"]
+    }
+  },
+  crossOriginResourcePolicy: { policy: "cross-origin" }
+}));
 
 // Middlewares
-app.use(
-  helmet({
-    contentSecurityPolicy: {
-      directives: {
-        ...helmet.contentSecurityPolicy.getDefaultDirectives(),
-        "default-src": ["'self'"],
-        "img-src": ["'self'", "data:", "https://livraria-e905.onrender.com"],
-        "script-src": ["'self'", "https://cdn.jsdelivr.net"],
-        "style-src": ["'self'", "https://cdn.jsdelivr.net", "'unsafe-inline'"],
-        "connect-src": ["'self'", "https://livraria-e905.onrender.com"]
-      }
-    },
-    crossOriginResourcePolicy: { policy: "cross-origin" }
-  })
-);
-
-app.get('/favicon.ico', (req, res) => {
-  res.sendFile(path.join(__dirname, '/home/fuad/faculdade/n46112n1/livraria-api/public/images/favicon.ico'), {
-    headers: {
-      'Content-Type': 'image/x-icon',
-      'Cache-Control': 'public, max-age=31536000'
-    }
-  });
-});
-
 app.use(express.json());
 app.use(cors({
   origin: ['http://localhost:3000', 'https://livraria-e905.onrender.com']
 }));
 
-
-
+// Servir arquivos estáticos
+app.use(express.static(path.join(__dirname, '../../public')));
 
 // Rotas da API
 app.use('/api/livros', livrosRouter);
-app.use('/api/livros', avaliacoesRouter); // Rotas de avaliações
+app.use('/api/livros', avaliacoesRouter);
 
 // Rota para o frontend
 app.get('*', (req, res) => {
