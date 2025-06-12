@@ -21,6 +21,11 @@ export const prisma = new PrismaClient({
 });
 
 const app = express();
+const express = require('express');
+const path = require('path');
+
+// Servir arquivos estáticos da pasta 'public'
+app.use(express.static(path.join(__dirname, '../../public')));
 
 // Middlewares
 app.use(
@@ -55,8 +60,7 @@ app.use(cors({
 
 
 
-// Servir arquivos estáticos (frontend)
-app.use(express.static(path.join(__dirname, '../../public')));
+
 // Rotas da API
 app.use('/api/livros', livrosRouter);
 app.use('/api/livros', avaliacoesRouter); // Rotas de avaliações
